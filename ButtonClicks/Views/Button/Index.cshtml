@@ -1,0 +1,75 @@
+﻿@model List<ButtonClicks.Models.ButtonModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $(document).contextmenu(function () {
+                return false;
+            });
+
+            $('.game-button').mousedown(function (event) {
+                if (event.which == 3) {
+                    console.log("event 3 right click");
+                    console.log(this.getAttribute("value"));
+ 
+                    $.post("@Url.Action("OnRightButtonClick", "Button")", { mine: this.getAttribute("value") }, function (data) {
+                        console.log(data); 
+                        $("body").html(data);
+                    });
+
+                }
+            });
+
+
+
+        });
+    </script>
+
+</head>
+<body>
+    <div>
+        <h2>Welcome to the buttons page</h2>
+        @Html.Label("Playing with buttons")
+        <br />
+
+        @using (Html.BeginForm("OnButtonClick", "Button"))
+        {
+            for (int i = 0; i < Model.Count; i++)
+            {
+                if (i % 5 == 0)
+                {
+                    <br />
+                }
+                <button class="game-button" type="submit" name="mine" value=@i>
+                    @if (Model[i].Flagged == true)
+                    {
+                        <img src="~/Images/flag_50_50_px.png" />
+                    }
+                    else if (Model[i].State == true)
+                    {
+                        <img src="~/Images/button_green_50_50_px.png" />
+                    }
+                    else
+                    {
+                    <img src="~/Images/button_red_50_50_px.png" />
+                    }
+                </button>
+            }
+        }
+
+    </div>
+</body>
+</html>
